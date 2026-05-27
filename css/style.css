@@ -144,7 +144,7 @@ main {
 }
 
 body.home-page {
-    background: #f2eee8;
+    background: #FEFAF6;
 }
 
 .home-main {
@@ -165,7 +165,7 @@ body.home-page {
     height: var(--home-hero-height);
     margin-left: calc(50% - 50vw);
     overflow: hidden;
-    background: #efe7db;
+    background: #FEFAF6;
     opacity: 0;
     transform: translateY(10px) scale(0.96);
     transform-origin: top center;
@@ -241,7 +241,7 @@ footer {
     place-items: center;
     gap: 14px;
     padding: 24px;
-    background: rgba(248, 250, 246, 0.92);
+    background: rgba(254, 250, 246, 0.92);
     text-align: center;
 }
 
