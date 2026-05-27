@@ -1,0 +1,26 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Linh and Andrew Wedding//Schedule//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Linh & Andrew Wedding
+
+BEGIN:VEVENT
+UID:ceremony-20270103@linhandrew.wedding
+DTSTAMP:20260510T000000Z
+DTSTART:20270103T100000
+DTEND:20270103T120000
+SUMMARY:Linh & Andrew Wedding Ceremony
+DESCRIPTION:Semi-formal: jackets and slacks, and midi to maxi dresses.\nTraditional Vietnamese family-style meal hosted by Linh's parents.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:reception-20270103@linhandrew.wedding
+DTSTAMP:20260510T000000Z
+DTSTART:20270103T170000
+DTEND:20270103T203000
+SUMMARY:Linh & Andrew Wedding Reception
+DESCRIPTION:Beach attire: wear linen pants, short-sleeved button downs, and midi to maxi dresses.\nThe grass can be soft, so rethink pointed heels.
+END:VEVENT
+
+END:VCALENDAR

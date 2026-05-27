@@ -1,3 +1,9 @@
+@font-face {
+    font-family: "Le Jour Script";
+    src: url("../extra/Le Jour Script Personal Use Only.otf") format("opentype");
+    font-display: swap;
+}
+
 /* General Styles */
 * {
     margin: 0;
@@ -7,15 +13,28 @@
 
 html {
     scroll-behavior: smooth;
+    --header-offset: 0px;
+    --home-hero-height: 620px;
 }
 
 body {
     font-family: "Lora", serif;
     line-height: 1.6;
-    color: #3A2A25;
+    color: #102C57;
     text-align: center;
-    padding-top: 124px;
-    background: #F8FAE5;
+    background: #FEFAF6;
+}
+
+body.page-locked {
+    overflow: hidden;
+}
+
+body.page-locked #site-header,
+body.page-locked main,
+body.page-locked footer {
+    filter: blur(8px);
+    pointer-events: none;
+    user-select: none;
 }
 
 button,
@@ -27,17 +46,8 @@ textarea {
 
 /* Navigation */
 #site-header {
-    position: fixed;
-    top: 0;
-    left: 0;
     width: 100%;
-    z-index: 1000;
-    transition: transform 0.35s ease;
     background: transparent;
-}
-
-#site-header.is-hidden {
-    transform: translateY(-100%);
 }
 
 .site-brand-item {
@@ -48,8 +58,8 @@ textarea {
 
 .site-brand-item a {
     display: inline-block !important;
-    font-family: "Meddon", cursive;
-    font-size: 3rem !important;
+    font-family: "Le Jour Script", "Meddon", cursive;
+    font-size: 6rem !important;
     line-height: 1.2;
     color: #76453B;
     text-decoration: none;
@@ -61,9 +71,18 @@ textarea {
 }
 
 #navbar {
-    background: #43766C;
+    background: #FEFAF6;
     width: 100%;
+    opacity: 0;
+    transform: translateY(-28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
 }
+
+body.page-ready #navbar {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 #navbar .site-brand-item a,
 #navbar .site-brand-item a:hover {
     text-decoration: none;
@@ -83,7 +102,7 @@ textarea {
 
 #navbar a {
     display: inline-block;
-    color: #F8FAE5;
+    color: #102C57;
     text-align: center;
     padding: 10px 14px 12px;
     text-decoration: none;
@@ -107,6 +126,7 @@ textarea {
 .leaf-decoration img {
     height: 56px;
     width: auto;
+    mix-blend-mode: multiply;
     opacity: 1;
     transition: transform 0.2s ease;
 }
@@ -123,10 +143,82 @@ main {
     min-height: 120vh;
 }
 
+body.home-page {
+    background: #f2eee8;
+}
+
+.home-main {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    min-height: 0;
+}
+
+.home-main section {
+    margin: 0;
+}
+
+.home-slideshow {
+    position: relative;
+    width: 100vw;
+    height: var(--home-hero-height);
+    margin-left: calc(50% - 50vw);
+    overflow: hidden;
+    background: #efe7db;
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+    transform-origin: top center;
+    transition: height 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease 0.12s, transform 0.8s ease 0.12s;
+}
+
+body.home-page.page-ready .home-slideshow {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.home-slideshow-image {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100vw;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.home-slideshow-image.is-active {
+    opacity: 1;
+}
+
+.home-intro {
+    padding: 72px 20px 88px;
+    text-align: center;
+}
+
+.home-intro-name,
+.home-intro-ampersand {
+    font-family: "Le Jour Script", "Meddon", cursive;
+    color: #102C57;
+    line-height: 1.05;
+}
+
+.home-intro-name {
+    margin: 0;
+    font-size: clamp(4.5rem, 10vw, 8rem);
+}
+
+.home-intro-ampersand {
+    margin: 12px 0;
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+}
+
 h1, h2, h3 {
     margin: 20px 0 10px;
     font-weight: 600;
-    color: #76453B;
+    color: #102C57;
 }
 
 section {
@@ -135,10 +227,84 @@ section {
 
 /* Footer */
 footer {
-    color: #3A2A25;
+    color: #102C57;
     text-align: center;
     padding: 0;
     margin-top: 0;
+}
+
+.password-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: grid;
+    place-items: center;
+    gap: 14px;
+    padding: 24px;
+    background: rgba(248, 250, 246, 0.92);
+    text-align: center;
+}
+
+.password-gate__eyebrow {
+    margin: 0;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    color: #76453B;
+}
+
+.password-gate__title {
+    margin: 0;
+    color: #102C57;
+    font-size: clamp(2rem, 4vw, 2.6rem);
+}
+
+.password-gate__form {
+    display: grid;
+    gap: 12px;
+    width: min(320px, 100%);
+}
+
+.password-gate__label {
+    font-weight: 600;
+    color: #102C57;
+    text-align: left;
+}
+
+.password-gate__input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid rgba(118, 69, 59, 0.24);
+    border-radius: 0;
+    background: #fff;
+    color: #102C57;
+}
+
+.password-gate__input:focus {
+    outline: 2px solid rgba(16, 44, 87, 0.18);
+    border-color: rgba(16, 44, 87, 0.35);
+}
+
+.password-gate__error {
+    min-height: 1.4em;
+    margin: 0;
+    color: #a1463f;
+}
+
+.password-gate__button {
+    margin-top: 6px;
+    padding: 14px 18px;
+    border: 1px solid #102C57;
+    border-radius: 0;
+    background: transparent;
+    color: #102C57;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.password-gate__button:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
 }
 
 /* Gallery */
@@ -172,9 +338,9 @@ form select {
 
 form button {
     background-color: transparent;
-    color: #3A2A25;
+    color: #102C57;
     padding: 10px 20px;
-    border: 1px solid #3A2A25;
+    border: 1px solid #102C57;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -191,6 +357,90 @@ form button:hover {
     padding: 15px;
     border: 1px solid rgba(58, 42, 37, 0.2);
     border-radius: 4px;
+}
+
+/* Schedule */
+#schedule-content {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 12px 0 40px;
+}
+
+.schedule-actions {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    
+}
+
+.calendar-button {
+    display: inline-block;
+    padding: 0 0 4px;
+    border-bottom: 2px solid #7aa7c7;
+    text-decoration: none;
+    font-size: 1.05rem;
+}
+
+.calendar-button:hover {
+    opacity: 0.8;
+}
+
+.schedule-date-section {
+    margin-top: 48px;
+    margin-bottom: 18px;
+    text-align: left;
+    font-size: 1.35rem;
+}
+
+.schedule-date-section h2 {
+    margin: 0;
+}
+
+.schedule-date-section sup {
+    font-size: 0.65em;
+}
+
+.schedule-item {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.85fr) minmax(0, 2fr);
+    gap: 48px;
+    align-items: start;
+    padding: 18px 0 22px;
+    border-bottom: 1px solid rgba(58, 42, 37, 0.18);
+    text-align: left;
+}
+
+.event-title {
+    margin: 0 0 14px;
+    font-family: "Libre Baskerville", serif;
+    font-size: clamp(1.6rem, 2.2vw, 2rem);
+    font-weight: 400;
+    font-style: normal;
+}
+
+.event-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.event-time {
+    font-weight: 600;
+}
+
+.event-description {
+    max-width: none;
+    width: 100%;
+    padding-top: 10px;
+}
+
+.event-description ul {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.event-description li + li {
+    margin-top: 0.45rem;
 }
 
 /* Countdown */
@@ -217,7 +467,47 @@ a {
         gap: 0;
     }
 
+    #navbar {
+        padding: 0;
+    }
+
     .site-brand-item {
         padding-top: 0;
+    }
+
+    #schedule-content {
+        padding-top: 0;
+    }
+
+    .schedule-actions {
+        margin-bottom: 16px;
+    }
+
+    .schedule-date-section {
+        margin-top: 32px;
+        margin-bottom: 10px;
+    }
+
+    .schedule-item {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 18px 0;
+    }
+
+    .event-title {
+        margin-bottom: 10px;
+    }
+
+    .event-description {
+        max-width: none;
+        padding-top: 0;
+    }
+
+    .home-slideshow {
+        height: var(--home-hero-height);
+    }
+
+    .home-intro {
+        padding: 56px 20px 72px;
     }
 }
