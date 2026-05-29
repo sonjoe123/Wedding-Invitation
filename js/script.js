@@ -1,4 +1,4 @@
-const SITE_PASSWORD = '0311';
+const SITE_PASSWORD = 'VungTau2027!';
 const SITE_PASSWORD_KEY = 'linh-andrew-site-unlocked';
 
 // Menu Toggle (if using mobile menu)
@@ -16,7 +16,6 @@ function createPasswordGate() {
     const overlay = document.createElement('div');
     overlay.className = 'password-gate';
     overlay.innerHTML = `
-        <p class="password-gate__eyebrow">Private Wedding Website</p>
         <h1 class="password-gate__title">Enter Password</h1>
         <form class="password-gate__form">
             <label class="password-gate__label" for="site-password">Password</label>
