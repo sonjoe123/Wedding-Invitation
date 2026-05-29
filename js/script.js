@@ -1,4 +1,4 @@
-const SITE_PASSWORD = 'VungTau2027!';
+const SITE_PASSWORD = 'VT2027';
 const SITE_PASSWORD_KEY = 'linh-andrew-site-unlocked';
 
 // Menu Toggle (if using mobile menu)
@@ -23,9 +23,11 @@ function createPasswordGate() {
                 class="password-gate__input"
                 id="site-password"
                 name="site-password"
-                type="password"
-                inputmode="numeric"
+                type="text"
+                inputmode="text"
                 autocomplete="off"
+                autocapitalize="off"
+                spellcheck="false"
                 required
             >
             <p class="password-gate__error" aria-live="polite"></p>
