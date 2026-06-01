@@ -1,5 +1,7 @@
 const SITE_PASSWORD = 'VT2027';
 const SITE_PASSWORD_KEY = 'linh-andrew-site-unlocked';
+const WEDDING_DATE = new Date('2027-01-03T00:00:00+07:00');
+let countdownIntervalId = null;
 
 // Menu Toggle (if using mobile menu)
 function toggleMenu() {
@@ -9,7 +11,6 @@ function toggleMenu() {
     }
 
     navbar.classList.toggle('active');
-    syncHomeHeroHeight();
 }
 
 function createPasswordGate() {
@@ -46,7 +47,6 @@ function setupPasswordGate() {
         window.requestAnimationFrame(() => {
             document.body.classList.add('page-ready');
             syncHeaderOffset();
-            syncHomeHeroHeight();
         });
 
         return;
@@ -67,7 +67,6 @@ function setupPasswordGate() {
             window.requestAnimationFrame(() => {
                 document.body.classList.add('page-ready');
                 syncHeaderOffset();
-                syncHomeHeroHeight();
             });
 
             overlay.remove();
@@ -93,39 +92,6 @@ function syncHeaderOffset() {
     document.documentElement.style.setProperty('--header-offset', `${Math.ceil(siteHeader.offsetHeight)}px`);
 }
 
-function syncHomeHeroHeight() {
-    const homeSlideshow = document.querySelector('.home-slideshow');
-    const siteHeader = document.getElementById('site-header');
-
-    if (!homeSlideshow || !siteHeader) {
-        return;
-    }
-
-    const viewportHeight = window.innerHeight;
-    const headerHeight = Math.ceil(siteHeader.offsetHeight);
-    const heroAtTop = homeSlideshow.getBoundingClientRect().top <= 0;
-    const availableHeight = heroAtTop
-        ? viewportHeight
-        : Math.max(420, viewportHeight - headerHeight);
-
-    document.documentElement.style.setProperty('--home-hero-height', `${availableHeight}px`);
-}
-
-function setupHomeSlideshow() {
-    const slides = Array.from(document.querySelectorAll('.home-slideshow-image'));
-    if (slides.length < 2) {
-        return;
-    }
-
-    let activeIndex = 0;
-
-    window.setInterval(() => {
-        slides[activeIndex].classList.remove('is-active');
-        activeIndex = (activeIndex + 1) % slides.length;
-        slides[activeIndex].classList.add('is-active');
-    }, 3000);
-}
-
 function setupRsvpForm() {
     const form = document.querySelector('form');
     if (!form) {
@@ -139,34 +105,207 @@ function setupRsvpForm() {
     });
 }
 
+function formatCountdownUnit(value, label) {
+    return `${value} ${label}${value === 1 ? '' : 's'}`;
+}
+
+function updateCountdown() {
+    const countdown = document.getElementById('countdown');
+    if (!countdown) {
+        return;
+    }
+
+    const now = new Date();
+    const distance = WEDDING_DATE.getTime() - now.getTime();
+
+    if (distance <= 0) {
+        countdown.textContent = 'Today is the day.';
+        return;
+    }
+
+    const totalSeconds = Math.floor(distance / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    countdown.textContent = [
+        formatCountdownUnit(days, 'day'),
+        formatCountdownUnit(hours, 'hour'),
+        formatCountdownUnit(minutes, 'minute'),
+        formatCountdownUnit(seconds, 'second')
+    ].join('   ');
+}
+
+function setupCountdown() {
+    const countdown = document.getElementById('countdown');
+    if (countdownIntervalId) {
+        window.clearInterval(countdownIntervalId);
+        countdownIntervalId = null;
+    }
+
+    if (!countdown) {
+        return;
+    }
+
+    updateCountdown();
+    countdownIntervalId = window.setInterval(updateCountdown, 1000);
+}
+
 function initializePage() {
     syncHeaderOffset();
-    syncHomeHeroHeight();
-    setupHomeSlideshow();
     setupRsvpForm();
+    setupCountdown();
+}
+
+function setBodyClasses(nextBodyClassList) {
+    const persistentClasses = [];
+
+    if (document.body.classList.contains('page-locked')) {
+        persistentClasses.push('page-locked');
+    }
+
+    if (document.body.classList.contains('page-ready')) {
+        persistentClasses.push('page-ready');
+    }
+
+    document.body.className = '';
+    nextBodyClassList.forEach((className) => {
+        if (className === 'page-locked' || className === 'page-ready') {
+            return;
+        }
+
+        document.body.classList.add(className);
+    });
+    persistentClasses.forEach((className) => {
+        document.body.classList.add(className);
+    });
+}
+
+function syncNavbarState() {
+    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+    const navbarLinks = document.querySelectorAll('#navbar a[href]');
+
+    navbarLinks.forEach((link) => {
+        const href = link.getAttribute('href');
+        const isCurrentPage = href === currentPath || (currentPath === '' && href === 'index.html');
+
+        if (isCurrentPage) {
+            link.setAttribute('aria-current', 'page');
+        } else {
+            link.removeAttribute('aria-current');
+        }
+    });
+}
+
+function isInternalPageLink(link) {
+    if (!link) {
+        return false;
+    }
+
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#')) {
+        return false;
+    }
+
+    const url = new URL(link.href, window.location.href);
+    const isSameOrigin = url.origin === window.location.origin;
+    const isHtmlPage = url.pathname.endsWith('.html') || url.pathname === '/' || url.pathname === '';
+
+    return isSameOrigin && isHtmlPage;
+}
+
+async function loadPage(url, shouldPushState = true) {
+    const response = await fetch(url, {
+        headers: {
+            'X-Requested-With': 'fetch'
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Navigation failed with status ${response.status}`);
+    }
+
+    const html = await response.text();
+    const parser = new DOMParser();
+    const nextDocument = parser.parseFromString(html, 'text/html');
+    const nextMain = nextDocument.querySelector('main');
+
+    if (!nextMain) {
+        throw new Error('Navigation failed because the next page has no <main> content.');
+    }
+
+    const currentMain = document.querySelector('main');
+    currentMain.replaceWith(nextMain);
+    setBodyClasses(Array.from(nextDocument.body.classList));
+    document.title = nextDocument.title || document.title;
+    syncNavbarState();
+    initializePage();
+
+    if (shouldPushState) {
+        window.history.pushState({ __linhSite: true }, '', url);
+    }
+
+    window.scrollTo(0, 0);
+}
+
+function setupClientNavigation() {
+    if (!window.history || typeof window.history.pushState !== 'function') {
+        return;
+    }
+
+    if (!window.history.state || !window.history.state.__linhSite) {
+        window.history.replaceState({ __linhSite: true }, '', window.location.href);
+    }
+
+    document.addEventListener('click', async (event) => {
+        const link = event.target.closest('a');
+
+        if (!isInternalPageLink(link)) {
+            return;
+        }
+
+        if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+            return;
+        }
+
+        event.preventDefault();
+
+        try {
+            await loadPage(link.href);
+        } catch (error) {
+            window.location.href = link.href;
+        }
+    });
+
+    window.addEventListener('popstate', async () => {
+        try {
+            await loadPage(window.location.href, false);
+        } catch (error) {
+            window.location.reload();
+        }
+    });
+
+    syncNavbarState();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     initializePage();
     setupPasswordGate();
+    setupClientNavigation();
 });
 
 window.addEventListener('load', () => {
     syncHeaderOffset();
-    syncHomeHeroHeight();
 });
 
 window.addEventListener('resize', () => {
     syncHeaderOffset();
-    syncHomeHeroHeight();
 });
-
-window.addEventListener('scroll', syncHomeHeroHeight, { passive: true });
 
 if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => {
         syncHeaderOffset();
-        syncHomeHeroHeight();
     });
 }
 
