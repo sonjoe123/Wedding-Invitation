@@ -411,6 +411,61 @@ form button:hover {
     line-height: 1.8;
 }
 
+.faq-feature {
+    max-width: 980px;
+    margin: 28px auto 0;
+}
+
+.faq-card {
+    display: block;
+    overflow: hidden;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 16px 34px rgba(16, 44, 87, 0.08);
+}
+
+.faq-card-image {
+    display: block;
+    width: 100%;
+    height: clamp(180px, 28vw, 260px);
+    object-fit: cover;
+    object-position: center 60%;
+}
+
+.faq-card-body {
+    padding: 24px 26px 30px;
+    text-align: left;
+}
+
+.faq-card-eyebrow {
+    margin: 0 0 10px;
+    font-size: 0.92rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #76453B;
+}
+
+.faq-card-title {
+    margin: 0 0 12px;
+    font-family: "Libre Baskerville", "Lora", serif;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 400;
+    line-height: 1.25;
+}
+
+.faq-card-copy {
+    margin: 0 0 20px;
+    font-size: 1.05rem;
+}
+
+.faq-card-link {
+    display: inline-block;
+    padding-bottom: 4px;
+    border-bottom: 2px solid #7aa7c7;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
 .travel-feature {
     max-width: 980px;
     margin: 28px auto 0;
