@@ -17,6 +17,7 @@ function createPasswordGate() {
     const overlay = document.createElement('div');
     overlay.className = 'password-gate';
     overlay.innerHTML = `
+        <p class="password-gate__eyebrow">Private invitation</p>
         <h1 class="password-gate__title">Enter Password</h1>
         <form class="password-gate__form">
             <label class="password-gate__label" for="site-password">Password</label>
@@ -24,9 +25,9 @@ function createPasswordGate() {
                 class="password-gate__input"
                 id="site-password"
                 name="site-password"
-                type="text"
+                type="password"
                 inputmode="text"
-                autocomplete="off"
+                autocomplete="current-password"
                 autocapitalize="off"
                 spellcheck="false"
                 required
@@ -43,9 +44,9 @@ function createPasswordGate() {
 function setupPasswordGate() {
     if (window.localStorage.getItem(SITE_PASSWORD_KEY) === 'true') {
         document.body.classList.remove('page-locked');
+        document.body.classList.add('page-ready');
 
         window.requestAnimationFrame(() => {
-            document.body.classList.add('page-ready');
             syncHeaderOffset();
         });
 
@@ -63,13 +64,16 @@ function setupPasswordGate() {
         if (input.value === SITE_PASSWORD) {
             window.localStorage.setItem(SITE_PASSWORD_KEY, 'true');
             document.body.classList.remove('page-locked');
+            overlay.classList.add('is-closing');
 
             window.requestAnimationFrame(() => {
                 document.body.classList.add('page-ready');
                 syncHeaderOffset();
             });
 
-            overlay.remove();
+            window.setTimeout(() => {
+                overlay.remove();
+            }, 220);
             return;
         }
 
@@ -79,7 +83,7 @@ function setupPasswordGate() {
     });
 
     window.requestAnimationFrame(() => {
-        input.focus();
+        input.focus({ preventScroll: true });
     });
 }
 

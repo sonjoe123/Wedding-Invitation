@@ -265,10 +265,20 @@ footer {
     z-index: 2000;
     display: grid;
     place-items: center;
-    gap: 14px;
-    padding: 24px;
+    gap: 12px;
+    padding: max(24px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+    min-height: 100vh;
+    min-height: 100svh;
     background: rgba(254, 250, 246, 0.92);
     text-align: center;
+    transition: opacity 0.22s ease, transform 0.22s ease;
+    animation: password-gate-enter 0.28s ease-out both;
+}
+
+.password-gate.is-closing {
+    opacity: 0;
+    transform: scale(0.99);
+    pointer-events: none;
 }
 
 .password-gate__eyebrow {
@@ -288,7 +298,8 @@ footer {
 .password-gate__form {
     display: grid;
     gap: 12px;
-    width: min(320px, 100%);
+    width: min(92vw, 360px);
+    margin: 0 auto;
 }
 
 .password-gate__label {
@@ -304,6 +315,7 @@ footer {
     border-radius: 0;
     background: #fff;
     color: #102C57;
+    font-size: 16px;
 }
 
 .password-gate__input:focus {
@@ -331,6 +343,46 @@ footer {
 .password-gate__button:hover {
     opacity: 0.92;
     transform: translateY(-1px);
+}
+
+@keyframes password-gate-enter {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 480px) {
+    .password-gate {
+        gap: 10px;
+        padding: max(18px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    }
+
+    .password-gate__eyebrow {
+        font-size: 0.72rem;
+    }
+
+    .password-gate__title {
+        font-size: clamp(1.7rem, 8vw, 2.2rem);
+    }
+
+    .password-gate__form {
+        width: min(100%, 340px);
+    }
+
+    .password-gate__label {
+        font-size: 0.98rem;
+    }
+
+    .password-gate__input,
+    .password-gate__button {
+        min-height: 48px;
+    }
 }
 
 /* Gallery */
