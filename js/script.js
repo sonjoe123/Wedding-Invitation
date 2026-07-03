@@ -3,6 +3,29 @@ const SITE_PASSWORD_KEY = 'linh-andrew-site-unlocked';
 const WEDDING_DATE = new Date('2027-01-03T00:00:00+07:00');
 let countdownIntervalId = null;
 
+function readUnlockedState() {
+    try {
+        if (window.localStorage.getItem(SITE_PASSWORD_KEY) === 'true') {
+            return true;
+        }
+    } catch (error) {
+        // Ignore storage access failures and fall back to cookies.
+    }
+
+    return document.cookie.split('; ').some((cookie) => cookie === `${encodeURIComponent(SITE_PASSWORD_KEY)}=true`);
+}
+
+function saveUnlockedState() {
+    try {
+        window.localStorage.setItem(SITE_PASSWORD_KEY, 'true');
+        return;
+    } catch (error) {
+        // Ignore storage access failures and fall back to cookies.
+    }
+
+    document.cookie = `${encodeURIComponent(SITE_PASSWORD_KEY)}=true; path=/; max-age=2592000; samesite=lax`;
+}
+
 // Menu Toggle (if using mobile menu)
 function toggleMenu() {
     const navbar = document.getElementById('navbar');
@@ -14,6 +37,11 @@ function toggleMenu() {
 }
 
 function createPasswordGate() {
+    const existingOverlay = document.querySelector('.password-gate');
+    if (existingOverlay) {
+        return existingOverlay;
+    }
+
     const overlay = document.createElement('div');
     overlay.className = 'password-gate';
     overlay.innerHTML = `
@@ -42,9 +70,15 @@ function createPasswordGate() {
 }
 
 function setupPasswordGate() {
-    if (window.localStorage.getItem(SITE_PASSWORD_KEY) === 'true') {
+    const existingOverlay = document.querySelector('.password-gate');
+
+    if (readUnlockedState()) {
         document.body.classList.remove('page-locked');
         document.body.classList.add('page-ready');
+
+        if (existingOverlay) {
+            existingOverlay.remove();
+        }
 
         window.requestAnimationFrame(() => {
             syncHeaderOffset();
@@ -62,7 +96,7 @@ function setupPasswordGate() {
         event.preventDefault();
 
         if (input.value === SITE_PASSWORD) {
-            window.localStorage.setItem(SITE_PASSWORD_KEY, 'true');
+            saveUnlockedState();
             document.body.classList.remove('page-locked');
             overlay.classList.add('is-closing');
 
@@ -156,10 +190,91 @@ function setupCountdown() {
     countdownIntervalId = window.setInterval(updateCountdown, 1000);
 }
 
+function setupPhotoReel() {
+    const reel = document.querySelector('.home-photo-reel');
+    const repeatedSet = reel?.querySelector('.home-photo-reel__set[aria-hidden="true"]');
+
+    if (!reel || !repeatedSet) {
+        return;
+    }
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let isDragging = false;
+    let isPaused = false;
+    let pointerStartX = 0;
+    let scrollStartX = 0;
+    let previousTime = performance.now();
+
+    const animate = (currentTime) => {
+        if (!reel.isConnected) {
+            return;
+        }
+
+        const elapsedSeconds = Math.min((currentTime - previousTime) / 1000, 0.1);
+        previousTime = currentTime;
+
+        if (!prefersReducedMotion && !isDragging && !isPaused) {
+            reel.scrollLeft += 18 * elapsedSeconds;
+
+            if (reel.scrollLeft >= repeatedSet.offsetLeft) {
+                reel.scrollLeft -= repeatedSet.offsetLeft;
+            }
+        }
+
+        window.requestAnimationFrame(animate);
+    };
+
+    reel.addEventListener('pointerdown', (event) => {
+        isDragging = true;
+
+        if (event.pointerType === 'touch') {
+            return;
+        }
+
+        pointerStartX = event.clientX;
+        scrollStartX = reel.scrollLeft;
+        reel.classList.add('is-dragging');
+        reel.setPointerCapture(event.pointerId);
+    });
+
+    reel.addEventListener('pointermove', (event) => {
+        if (!isDragging || event.pointerType === 'touch') {
+            return;
+        }
+
+        reel.scrollLeft = scrollStartX - (event.clientX - pointerStartX);
+    });
+
+    const stopDragging = (event) => {
+        if (!isDragging) {
+            return;
+        }
+
+        isDragging = false;
+        reel.classList.remove('is-dragging');
+
+        if (reel.hasPointerCapture(event.pointerId)) {
+            reel.releasePointerCapture(event.pointerId);
+        }
+    };
+
+    reel.addEventListener('pointerup', stopDragging);
+    reel.addEventListener('pointercancel', stopDragging);
+    reel.addEventListener('mouseenter', () => {
+        isPaused = true;
+    });
+    reel.addEventListener('mouseleave', () => {
+        isPaused = false;
+    });
+
+    window.requestAnimationFrame(animate);
+}
+
 function initializePage() {
     syncHeaderOffset();
     setupRsvpForm();
     setupCountdown();
+    setupPhotoReel();
 }
 
 function setBodyClasses(nextBodyClassList) {

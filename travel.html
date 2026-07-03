@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Travel | Wedding</title>
+    <link rel="icon" type="image/png" href="extra/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
@@ -15,7 +16,7 @@
         <nav id="navbar">
             <ul>
                 <li class="site-brand-item"><a href="index.html">Linh & Andrew</a></li>
-                <li class="leaf-decoration"><img src="extra/flower1.png" alt="flower decoration"></li>
+                <li class="leaf-decoration"><img src="extra/symbol-nav.png" alt="Lotus symbol"></li>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="schedule.html">Schedule</a></li>
                 <li><a href="travel.html">Travel</a></li>
@@ -41,6 +42,27 @@
     </main>
 
     <footer></footer>
+
+    <div class="password-gate">
+        <p class="password-gate__eyebrow">Private invitation</p>
+        <h1 class="password-gate__title">Enter Password</h1>
+        <form class="password-gate__form">
+            <label class="password-gate__label" for="site-password">Password</label>
+            <input
+                class="password-gate__input"
+                id="site-password"
+                name="site-password"
+                type="password"
+                inputmode="text"
+                autocomplete="current-password"
+                autocapitalize="off"
+                spellcheck="false"
+                required
+            >
+            <p class="password-gate__error" aria-live="polite"></p>
+            <button class="password-gate__button" type="submit">Open Site</button>
+        </form>
+    </div>
 
     <script src="js/script.js"></script>
 </body>

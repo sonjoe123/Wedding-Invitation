@@ -36,7 +36,7 @@ body::before {
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-    opacity: 0.10;
+    opacity: 0.05;
     transform: scale(1.08);
 }
 
@@ -172,6 +172,48 @@ body.home-page {
 
 .home-main section {
     margin: 0;
+}
+
+.home-photo-reel {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 28px 0 18px;
+    cursor: grab;
+    scrollbar-width: none;
+    touch-action: pan-x;
+    user-select: none;
+}
+
+.home-photo-reel::-webkit-scrollbar {
+    display: none;
+}
+
+.home-photo-reel.is-dragging {
+    cursor: grabbing;
+}
+
+.home-photo-reel__track {
+    display: flex;
+    width: max-content;
+}
+
+.home-photo-reel__set {
+    display: flex;
+    flex-shrink: 0;
+    gap: 16px;
+    padding-right: 16px;
+}
+
+.home-photo-reel img {
+    display: block;
+    width: clamp(525px, 60vw, 825px);
+    aspect-ratio: 3 / 4;
+    flex: 0 0 auto;
+    object-fit: cover;
+    object-position: center;
+    background: #eee7df;
+    box-shadow: 0 12px 28px rgba(16, 44, 87, 0.1);
 }
 
 .home-intro {
@@ -650,7 +692,8 @@ form button:hover {
 
 .event-description ul {
     margin: 0;
-    padding-left: 1.25rem;
+    padding-left: 0;
+    list-style: none;
 }
 
 .event-description li + li {
@@ -721,6 +764,19 @@ a {
         padding: 56px 20px 72px;
     }
 
+    .home-photo-reel {
+        padding-top: 18px;
+    }
+
+    .home-photo-reel__set {
+        gap: 10px;
+        padding-right: 10px;
+    }
+
+    .home-photo-reel img {
+        width: min(170vw, 675px);
+    }
+
     .home-details {
         gap: 14px;
         margin-top: 28px;
@@ -737,5 +793,11 @@ a {
 
     .rsvp-embed iframe {
         min-height: 1320px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-photo-reel__set[aria-hidden="true"] {
+        display: none;
     }
 }
