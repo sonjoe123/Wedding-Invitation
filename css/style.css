@@ -181,7 +181,7 @@ body.home-page {
     padding: 28px 0 18px;
     cursor: grab;
     scrollbar-width: none;
-    touch-action: pan-x;
+    touch-action: auto;
     user-select: none;
 }
 
@@ -214,6 +214,7 @@ body.home-page {
     object-position: center;
     background: #eee7df;
     box-shadow: 0 12px 28px rgba(16, 44, 87, 0.1);
+    -webkit-user-drag: none;
 }
 
 .home-intro {
@@ -713,7 +714,11 @@ a {
 
 @media (max-width: 768px) {
     body {
-        padding-top: 170px;
+        padding-top: 0;
+    }
+
+    main {
+        padding-inline: clamp(12px, 4vw, 20px);
     }
 
     #site-header {
@@ -730,6 +735,14 @@ a {
 
     .site-brand-item {
         padding-top: 0;
+    }
+
+    .site-brand-item a {
+        font-size: clamp(2.8rem, 14vw, 4.5rem) !important;
+    }
+
+    #navbar a {
+        padding-inline: clamp(7px, 2.5vw, 12px);
     }
 
     #schedule-content {
@@ -774,7 +787,7 @@ a {
     }
 
     .home-photo-reel img {
-        width: min(170vw, 675px);
+        width: min(82vw, 525px);
     }
 
     .home-details {

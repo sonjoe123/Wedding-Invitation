@@ -53,9 +53,9 @@ function createPasswordGate() {
                 class="password-gate__input"
                 id="site-password"
                 name="site-password"
-                type="password"
+                type="text"
                 inputmode="text"
-                autocomplete="current-password"
+                autocomplete="off"
                 autocapitalize="off"
                 spellcheck="false"
                 required
