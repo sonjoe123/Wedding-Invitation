@@ -270,18 +270,27 @@ body.home-page {
     display: inline-block;
     min-width: min(300px, 82vw);
     padding: 14px 28px;
-    background: #3e5067;
-    color: #fff;
+    border: 2px solid #3e5067;
+    border-radius: 12px;
+    background: transparent;
+    color: #3e5067;
     text-decoration: none;
     font-size: 1.45rem;
     font-weight: 600;
     letter-spacing: 0.03em;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
-.home-rsvp-link:hover {
-    opacity: 0.94;
+.home-rsvp-link:hover,
+.home-rsvp-link:focus-visible,
+.home-rsvp-link:active {
+    background: #3e5067;
+    color: #fff;
     transform: translateY(-1px);
+}
+
+.home-rsvp-link:active {
+    transform: translateY(0);
 }
 
 h1, h2, h3 {
