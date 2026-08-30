@@ -204,6 +204,7 @@ function setupPhotoReel() {
     let pointerStartX = 0;
     let scrollStartX = 0;
     let previousTime = performance.now();
+    let pendingAutoScroll = 0;
 
     const animate = (currentTime) => {
         if (!reel.isConnected) {
@@ -214,7 +215,13 @@ function setupPhotoReel() {
         previousTime = currentTime;
 
         if (!prefersReducedMotion && !isDragging && !isPaused) {
-            reel.scrollLeft += 18 * elapsedSeconds;
+            pendingAutoScroll += 50 * elapsedSeconds;
+            const wholePixels = Math.floor(pendingAutoScroll);
+
+            if (wholePixels > 0) {
+                reel.scrollLeft += wholePixels;
+                pendingAutoScroll -= wholePixels;
+            }
 
             if (reel.scrollLeft >= repeatedSet.offsetLeft) {
                 reel.scrollLeft -= repeatedSet.offsetLeft;
